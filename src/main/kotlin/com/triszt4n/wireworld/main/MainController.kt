@@ -1,4 +1,4 @@
-package com.example.demo.main
+package com.triszt4n.wireworld.main
 
 import tornadofx.*
 

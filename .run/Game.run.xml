@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Game" type="Application" factoryName="Application">
-    <option name="MAIN_CLASS_NAME" value="com.example.demo.MyApp" />
+    <option name="MAIN_CLASS_NAME" value="com.triszt4n.wireworld.MyApp" />
     <module name="hw-kotlin-wireworld.main" />
     <extension name="net.ashald.envfile">
       <option name="IS_ENABLED" value="false" />
