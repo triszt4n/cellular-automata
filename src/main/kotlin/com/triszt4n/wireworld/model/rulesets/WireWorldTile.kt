@@ -7,8 +7,7 @@ enum class WireWorldTileType(val char: Char) {
     EMPTY(' '), HEAD('*'), TAIL('-'), CONDUCTOR('.')
 }
 
-class WireWorldTile() : AbstractTile() {
-    private var type: WireWorldTileType = WireWorldTileType.EMPTY
+data class WireWorldTile(var type: WireWorldTileType = WireWorldTileType.EMPTY) : AbstractTile() {
     private var newType: WireWorldTileType = WireWorldTileType.EMPTY
 
     override fun generateNewType(neighbours: List<AbstractTile>) {
@@ -40,14 +39,16 @@ class WireWorldTile() : AbstractTile() {
         }
     }
 
-    override fun translateFromChar(char: Char): WireWorldTile {
-        return WireWorldTile().apply {
-            this.type = when (char) {
-                WireWorldTileType.HEAD.char -> WireWorldTileType.HEAD
-                WireWorldTileType.TAIL.char -> WireWorldTileType.TAIL
-                WireWorldTileType.CONDUCTOR.char -> WireWorldTileType.CONDUCTOR
-                else -> WireWorldTileType.EMPTY
-            }
+    override fun translateFromChar(char: Char) {
+        type = when (char) {
+            WireWorldTileType.HEAD.char -> WireWorldTileType.HEAD
+            WireWorldTileType.TAIL.char -> WireWorldTileType.TAIL
+            WireWorldTileType.CONDUCTOR.char -> WireWorldTileType.CONDUCTOR
+            else -> WireWorldTileType.EMPTY
         }
+    }
+
+    override fun translateToChar(): Char {
+        return type.char
     }
 }

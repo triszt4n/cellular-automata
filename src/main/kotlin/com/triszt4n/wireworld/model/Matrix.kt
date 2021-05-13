@@ -81,14 +81,11 @@ abstract class AbstractMatrix<out T>: Matrix<T> {
  * Removed TransposedMatrix, not needed
  */
 
-internal open class ListMatrix<out T>(override val cols: Int, override val rows: Int,
-                                      protected val list: List<T>) :
-    AbstractMatrix<T>() {
+internal open class ListMatrix<out T>(override val cols: Int, override val rows: Int, protected val list: List<T>) : AbstractMatrix<T>() {
     override operator fun get(x: Int, y: Int): T = list[y*cols+x]
 }
 
-internal class MutableListMatrix<T>(cols: Int, rows: Int, list: MutableList<T>):
-    ListMatrix<T>(cols, rows, list), MutableMatrix<T> {
+internal class MutableListMatrix<T>(cols: Int, rows: Int, list: MutableList<T>) : ListMatrix<T>(cols, rows, list), MutableMatrix<T> {
     override fun set(x: Int, y: Int, value: T) {
         (list as MutableList<T>)[y*cols+x] = value
     }

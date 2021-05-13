@@ -19,5 +19,10 @@ abstract class AbstractTile() {
     /**
      * Sets the tile according to the give character
      */
-    abstract fun translateFromChar(char: Char): AbstractTile
+    abstract fun translateFromChar(char: Char)
+
+    /**
+     * Returns with a character representation of the tile
+     */
+    abstract fun translateToChar(): Char
 }
