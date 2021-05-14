@@ -2,35 +2,27 @@ package com.triszt4n.wireworld.main
 
 import com.triszt4n.wireworld.model.BoardApi
 import com.triszt4n.wireworld.model.InputModeType
-import com.triszt4n.wireworld.model.rulesets.WireWorldTile
-import com.triszt4n.wireworld.model.rulesets.WireWorldTileType
-import javafx.scene.input.MouseButton
-import javafx.scene.input.MouseEvent
+import com.triszt4n.wireworld.model.rulesets.GameOfLifeTile
+import com.triszt4n.wireworld.model.rulesets.GameOfLifeTileType
 import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
 import tornadofx.*
 import java.io.File
 import java.util.*
 
-class WireWorldController : AbstractController() {
-    private val api: BoardApi<WireWorldTile> = BoardApi()
+class GameOfLifeController : AbstractController() {
+    private val api: BoardApi<GameOfLifeTile> = BoardApi()
 
-    private fun getColorOfTile(tile: WireWorldTile): Color {
+    private fun getColorOfTile(tile: GameOfLifeTile): Color {
         return when (tile.type) {
-            WireWorldTileType.TAIL -> Color.ORANGERED
-            WireWorldTileType.CONDUCTOR -> Color.GOLD
-            WireWorldTileType.HEAD -> Color.BLUE
-            else -> Color.BLACK
+            GameOfLifeTileType.ALIVE -> Color.GOLD
+            GameOfLifeTileType.DEAD -> Color.BLACK
         }
     }
 
-    private fun onClick(tile: WireWorldTile, e: MouseEvent) {
-        tile.switch(
-            if (e.button == MouseButton.PRIMARY)
-                InputModeType.LEFT_CLICK_MODE
-            else
-                InputModeType.RIGHT_CLICK_MODE
-        )
+    private fun onClick(tile: GameOfLifeTile) {
+        // We don't care about which mouse button is clicked
+        tile.switch(InputModeType.RIGHT_CLICK_MODE)
     }
 
     override fun drawField(mainBox: VBox) {
@@ -44,8 +36,8 @@ class WireWorldController : AbstractController() {
                                     width = 14.0
                                     height = 14.0
                                     fill = getColorOfTile(api.tileMatrix[x, y])
-                                    setOnMouseClicked { e ->
-                                        onClick(api.tileMatrix[x, y], e)
+                                    setOnMouseClicked {
+                                        onClick(api.tileMatrix[x, y])
                                         fill = getColorOfTile(api.tileMatrix[x, y])
                                     }
                                     api.tileMatrix[x, y].onChange = {
@@ -63,14 +55,14 @@ class WireWorldController : AbstractController() {
     }
 
     override fun new(rowsString: String, colsString: String) {
-        api.new(rowsString.toInt(), colsString.toInt()) { WireWorldTile() }
+        api.new(rowsString.toInt(), colsString.toInt()) { GameOfLifeTile() }
         onChange?.invoke()
     }
 
     override fun load() {
         super.load()
         val file: File = getLoadedFile() ?: return
-        api.loadFromFile(file) { WireWorldTile() }
+        api.loadFromFile(file) { GameOfLifeTile() }
         onChange?.invoke()
     }
 
@@ -84,7 +76,7 @@ class WireWorldController : AbstractController() {
         timer.cancel()
         timer.purge()
         timer = Timer()
-        timer.schedule(Task { api.cycleOnce() }, 500, 200)
+        timer.schedule(Task { api.cycleOnce() }, 500, 100)
     }
 
     override fun reset() {

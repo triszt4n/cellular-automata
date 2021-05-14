@@ -8,12 +8,20 @@ enum class WireWorldTileType(val char: Char) {
 }
 
 data class WireWorldTile(var type: WireWorldTileType = WireWorldTileType.EMPTY) : AbstractTile() {
-    private val originalType: WireWorldTileType = type
     private var newType: WireWorldTileType = WireWorldTileType.EMPTY
+
+    /**
+     * View helper method for rectangles to react to changing types
+     */
     lateinit var onChange: () -> Unit
 
+    /**
+     * @see AbstractTile.generateNewType
+     */
     override fun generateNewType(neighbours: List<AbstractTile>) {
-        val headCount: Int = neighbours.count { (it as? WireWorldTile)?.type == WireWorldTileType.HEAD }
+        val headCount = neighbours.filterIsInstance<WireWorldTile>().count {
+            it.type == WireWorldTileType.HEAD
+        }
 
         newType = when (type) {
             WireWorldTileType.HEAD -> WireWorldTileType.TAIL
@@ -21,28 +29,39 @@ data class WireWorldTile(var type: WireWorldTileType = WireWorldTileType.EMPTY) 
             WireWorldTileType.CONDUCTOR -> if (headCount in 1..2) WireWorldTileType.HEAD else WireWorldTileType.CONDUCTOR
             else -> WireWorldTileType.EMPTY
         }
-        println("$headCount ${newType.char} ")
     }
 
+    /**
+     * @see AbstractTile.applyNewType
+     */
     override fun applyNewType() {
         type = newType
         onChange()
     }
 
+    /**
+     * @see AbstractTile.switch
+     */
     override fun switch(mode: InputModeType) {
         type = when (mode) {
             InputModeType.LEFT_CLICK_MODE -> {
-                if (type == WireWorldTileType.EMPTY)
-                    WireWorldTileType.CONDUCTOR
-                else
+                if (type == WireWorldTileType.CONDUCTOR)
                     WireWorldTileType.EMPTY
+                else
+                    WireWorldTileType.CONDUCTOR
             }
             InputModeType.RIGHT_CLICK_MODE -> {
-                WireWorldTileType.HEAD
+                if (type == WireWorldTileType.HEAD)
+                    WireWorldTileType.TAIL
+                else
+                    WireWorldTileType.HEAD
             }
         }
     }
 
+    /**
+     * @see AbstractTile.translateFromChar
+     */
     override fun translateFromChar(char: Char) {
         type = when (char) {
             WireWorldTileType.HEAD.char -> WireWorldTileType.HEAD
@@ -52,11 +71,20 @@ data class WireWorldTile(var type: WireWorldTileType = WireWorldTileType.EMPTY) 
         }
     }
 
+    /**
+     * @see AbstractTile.translateToChar
+     */
     override fun translateToChar(): Char {
         return type.char
     }
 
+    /**
+     * @see AbstractTile.reset
+     */
     override fun reset() {
-        type = originalType
+        type = when (type) {
+            WireWorldTileType.EMPTY -> WireWorldTileType.EMPTY
+            else -> WireWorldTileType.CONDUCTOR
+        }
     }
 }

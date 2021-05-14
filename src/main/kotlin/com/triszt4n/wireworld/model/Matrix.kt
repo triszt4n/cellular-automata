@@ -1,7 +1,5 @@
 package com.triszt4n.wireworld.model
 
-import java.util.ArrayList
-
 /**
  * From yinpeng's Kotlin-matrix implementation, only Matrix.kt
  * Modifications noted below in code
@@ -82,11 +80,17 @@ abstract class AbstractMatrix<out T>: Matrix<T> {
  */
 
 internal open class ListMatrix<out T>(override val cols: Int, override val rows: Int, protected val list: List<T>) : AbstractMatrix<T>() {
-    override operator fun get(x: Int, y: Int): T = list[y*cols+x]
+    override operator fun get(x: Int, y: Int): T {
+        // I needed this validation
+        require(x >= 0 && y >= 0 && x < cols && y < rows)
+        return list[y*cols+x]
+    }
 }
 
 internal class MutableListMatrix<T>(cols: Int, rows: Int, list: MutableList<T>) : ListMatrix<T>(cols, rows, list), MutableMatrix<T> {
     override fun set(x: Int, y: Int, value: T) {
+        // I needed this validation
+        require(x >= 0 && y >= 0 && x < cols && y < rows)
         (list as MutableList<T>)[y*cols+x] = value
     }
 }
