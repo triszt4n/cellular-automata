@@ -1,7 +1,9 @@
 package com.triszt4n.wireworld.main
 
 import com.triszt4n.wireworld.Styles
-import javafx.scene.paint.Color
+import javafx.collections.FXCollections
+import javafx.collections.ObservableList
+import javafx.scene.layout.HBox
 import javafx.scene.shape.FillRule
 import javafx.stage.StageStyle
 import tornadofx.*
@@ -13,7 +15,16 @@ abstract class AbstractView(title: String): View(title) {
         const val resetSvg = "M10 18a8 8 0 100-16 8 8 0 000 16z M8 7a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1V8a1 1 0 00-1-1H8z"
     }
 
+    val boxField: ObservableList<HBox> = FXCollections.observableArrayList()
+
     lateinit var controller: AbstractController
+
+    override fun onDock() {
+        currentWindow?.setOnCloseRequest {
+            controller.timer.cancel()
+            controller.timer.purge()
+        }
+    }
 
     override val root = vbox {
         setMinSize(720.0, 360.0)
@@ -46,38 +57,31 @@ abstract class AbstractView(title: String): View(title) {
                     action {
                         controller.play()
                     }
-                    shortcut("Ctrl+A")
                 }
                 button {
                     svgpath(pauseSvg, FillRule.EVEN_ODD)
                     action {
                         controller.pause()
                     }
-                    shortcut("Ctrl+S")
                 }
                 button {
                     svgpath(resetSvg, FillRule.EVEN_ODD)
                     action {
                         controller.reset()
                     }
-                    shortcut("Ctrl+D")
                 }
             }
             label(title) {
                 addClass(Styles.heading)
             }
         }
-        vbox {
-            addClass(Styles.basicPadding)
-            hbox {
-                rectangle {
-                    width = 14.0
-                    height = 14.0
-                    fill = Color.FORESTGREEN
-                }
-                paddingBottom = 1.0
-                paddingRight = 1.0
+        hbox {
+            setMaxSize(165.0, 400.0)
+            flowpane {
+                addClass(Styles.basicPadding)
+                children.bind(boxField) { it }
             }
         }
+
     }
 }

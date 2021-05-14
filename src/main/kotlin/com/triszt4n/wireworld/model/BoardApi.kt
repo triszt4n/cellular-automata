@@ -7,7 +7,7 @@ enum class InputModeType {
 }
 
 class BoardApi<T : AbstractTile> {
-    private lateinit var tileMatrix: MutableMatrix<T>
+    lateinit var tileMatrix: MutableMatrix<T>
 
     fun cycleOnce() {
         tileMatrix.forEachIndexed { x, y, tile ->
@@ -15,15 +15,13 @@ class BoardApi<T : AbstractTile> {
 
             for (i: Int in y-1..y+1)
                 for (j: Int in x-1..x+1)
-                    if (i != y && j != x) neighbours.add(tileMatrix[i, j])
+                    if (i != y && j != x)
+                        try { neighbours.add(tileMatrix[j, i]) } catch (e: IndexOutOfBoundsException) { }
 
             tile.generateNewType(neighbours)
         }
         tileMatrix.forEach { it.applyNewType() }
-    }
-
-    fun switchTileAt(x: Int, y: Int, mode: InputModeType) {
-        tileMatrix[x, y].switch(mode)
+        println()
     }
 
     fun new(rows: Int, cols: Int, filler: () -> T) {
@@ -52,6 +50,12 @@ class BoardApi<T : AbstractTile> {
                 printer.print(tile.translateToChar())
                 if (x == tileMatrix.cols - 1) printer.println()
             }
+        }
+    }
+
+    fun reset() {
+        tileMatrix.forEach { tile ->
+            tile.reset()
         }
     }
 }

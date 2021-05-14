@@ -8,7 +8,9 @@ enum class WireWorldTileType(val char: Char) {
 }
 
 data class WireWorldTile(var type: WireWorldTileType = WireWorldTileType.EMPTY) : AbstractTile() {
+    private val originalType: WireWorldTileType = type
     private var newType: WireWorldTileType = WireWorldTileType.EMPTY
+    lateinit var onChange: () -> Unit
 
     override fun generateNewType(neighbours: List<AbstractTile>) {
         val headCount: Int = neighbours.count { (it as? WireWorldTile)?.type == WireWorldTileType.HEAD }
@@ -19,10 +21,12 @@ data class WireWorldTile(var type: WireWorldTileType = WireWorldTileType.EMPTY) 
             WireWorldTileType.CONDUCTOR -> if (headCount in 1..2) WireWorldTileType.HEAD else WireWorldTileType.CONDUCTOR
             else -> WireWorldTileType.EMPTY
         }
+        println("$headCount ${newType.char} ")
     }
 
     override fun applyNewType() {
         type = newType
+        onChange()
     }
 
     override fun switch(mode: InputModeType) {
@@ -50,5 +54,9 @@ data class WireWorldTile(var type: WireWorldTileType = WireWorldTileType.EMPTY) 
 
     override fun translateToChar(): Char {
         return type.char
+    }
+
+    override fun reset() {
+        type = originalType
     }
 }

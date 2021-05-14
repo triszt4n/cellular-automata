@@ -8,6 +8,7 @@ enum class GameOfLifeTileType(val char: Char) {
 }
 
 data class GameOfLifeTile(var type: GameOfLifeTileType = GameOfLifeTileType.DEAD) : AbstractTile() {
+    private val originalType: GameOfLifeTileType = type
     private var newType: GameOfLifeTileType = GameOfLifeTileType.DEAD
 
     override fun generateNewType(neighbours: List<AbstractTile>) {
@@ -34,5 +35,9 @@ data class GameOfLifeTile(var type: GameOfLifeTileType = GameOfLifeTileType.DEAD
 
     override fun translateToChar(): Char {
         return type.char
+    }
+
+    override fun reset() {
+        type = originalType
     }
 }

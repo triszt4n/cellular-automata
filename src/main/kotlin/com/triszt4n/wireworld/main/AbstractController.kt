@@ -5,6 +5,7 @@ import tornadofx.Controller
 import tornadofx.FileChooserMode
 import tornadofx.chooseFile
 import java.io.File
+import java.util.*
 
 abstract class AbstractController : Controller() {
     companion object {
@@ -12,16 +13,18 @@ abstract class AbstractController : Controller() {
         val initialDir = File("configurations")
     }
 
-    fun play() {
+    var timer: Timer = Timer()
 
+    abstract fun play()
+
+    open fun pause() {
+        timer.cancel()
+        timer.purge()
     }
 
-    fun pause() {
-
-    }
-
-    fun reset() {
-
+    open fun reset() {
+        timer.cancel()
+        timer.purge()
     }
 
     abstract fun new(rowsString: String, colsString: String)

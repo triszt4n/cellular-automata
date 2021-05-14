@@ -44,9 +44,13 @@ class NewBoardView: View("New Board") {
             addClass(Styles.inputLabel)
             alignment = Pos.BASELINE_RIGHT
             action {
-                if (rowsField.text.isNotBlank() && colsField.text.isNotBlank())
+                if (rowsField.text.isNotBlank() && colsField.text.isNotBlank()) {
                     controller.new(rowsField.text, colsField.text)
-                close()
+                    close()
+                }
+                else {
+                    model.alert.value = "Please enter valid integers!"
+                }
             }
         }
     }

@@ -25,4 +25,9 @@ abstract class AbstractTile() {
      * Returns with a character representation of the tile
      */
     abstract fun translateToChar(): Char
+
+    /**
+     * Sets it back to original
+     */
+    abstract fun reset()
 }
