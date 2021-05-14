@@ -26,13 +26,13 @@ class BoardApi<T : AbstractTile> {
         tileMatrix[x, y].switch(mode)
     }
 
-    fun new(rows: Int, cols: Int, filler: (Int, Int) -> T) {
+    fun new(rows: Int, cols: Int, filler: () -> T) {
         require(rows <= 30 && cols <= 60 && rows > 0 && cols > 0)
-        tileMatrix = createMutableMatrix(cols, rows, filler)
+        tileMatrix = createMutableMatrix(cols, rows) { _, _ -> filler() }
     }
 
-    fun loadFromFile(relativePath: String, filler: (Int, Int) -> T) {
-        val textLines: List<String> = File(relativePath).readLines()
+    fun loadFromFile(file: File, filler: () -> T) {
+        val textLines: List<String> = file.readLines()
         val rows: Int = textLines[0].split(' ')[0].trim().toInt()
         val cols: Int = textLines[0].split(' ')[1].trim().toInt()
         new(rows, cols, filler)
@@ -44,8 +44,8 @@ class BoardApi<T : AbstractTile> {
         }
     }
 
-    fun saveToFile(relativePath: String) {
-        File(relativePath).printWriter().use { printer ->
+    fun saveToFile(file: File) {
+        file.printWriter().use { printer ->
             printer.println("${tileMatrix.rows} ${tileMatrix.cols}")
 
             tileMatrix.forEachIndexed { x, _, tile ->

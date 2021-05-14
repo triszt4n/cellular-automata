@@ -1,6 +1,5 @@
 package com.triszt4n.wireworld
 
-import javafx.geometry.Pos
 import javafx.scene.text.FontWeight
 import tornadofx.Stylesheet
 import tornadofx.box
@@ -11,6 +10,8 @@ class Styles : Stylesheet() {
     companion object {
         val heading by cssclass()
         val buttons by cssclass()
+        val basicPadding by cssclass()
+        val inputLabel by cssclass()
     }
 
     init {
@@ -21,6 +22,13 @@ class Styles : Stylesheet() {
         }
         buttons {
             padding = box(12.px, 20.px)
+        }
+        basicPadding {
+            padding = box(30.px)
+        }
+        inputLabel {
+            padding = box(6.px)
+            fontSize = 14.px
         }
     }
 }
